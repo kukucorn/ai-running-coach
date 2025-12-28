@@ -122,13 +122,16 @@ class TelegramBot:
         """봇 실행"""
         await self.application.initialize()
         await self.application.start()
-        await self.application.updater.start_polling()
 
     async def stop(self):
         """봇 중지"""
-        await self.application.updater.stop()
         await self.application.stop()
         await self.application.shutdown()
+
+    async def process_update(self, update_data: dict):
+        """Webhook으로 받은 업데이트 처리"""
+        update = Update.de_json(update_data, self.application.bot)
+        await self.application.process_update(update)
 
 
 # 봇 인스턴스
