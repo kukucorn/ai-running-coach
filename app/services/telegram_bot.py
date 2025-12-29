@@ -49,8 +49,6 @@ class TelegramBot:
             supabase_client.table('users').upsert({
                 'telegram_id': user.id,
                 'username': user.username,
-                'first_name': user.first_name,
-                'last_name': user.last_name
             }).execute()
         except Exception as e:
             print(f"사용자 저장 오류: {e}")
