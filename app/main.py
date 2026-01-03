@@ -54,7 +54,7 @@ async def root():
     }
 
 
-@app.get("/health")
+@app.api_route("/health", methods=["GET", "HEAD"])
 async def health():
     """상태 확인"""
     return {"status": "healthy"}
