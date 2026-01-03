@@ -47,7 +47,7 @@ class TelegramBot:
         # 사용자 정보 Supabase에 저장
         try:
             supabase_client.table('users').upsert({
-                'telegram_id': user.id,
+                'id': user.id,
                 'username': user.username,
             }).execute()
         except Exception as e:
