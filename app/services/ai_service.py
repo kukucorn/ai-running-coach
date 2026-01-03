@@ -1,6 +1,7 @@
 from google import genai
 from app.config.settings import get_settings
 import os
+from datetime import timedelta
 
 settings = get_settings()
 
@@ -56,32 +57,19 @@ class AIService:
         except Exception as e:
             return f"죄송합니다. 응답 생성 중 오류가 발생했습니다: {str(e)}"
 
-    async def analyze_running_record(self, distance: float, time_minutes: float) -> str:
-        """
-        러닝 기록을 분석하고 피드백을 제공합니다.
-
-        Args:
-            distance: 거리 (km)
-            time_minutes: 시간 (분)
-
-        Returns:
-            분석 결과 및 피드백
-        """
-        pace = time_minutes / distance if distance > 0 else 0
-
+    async def analyze_running_record(self, distance: float, duration: timedelta, pace_per_km: timedelta) -> str:
         prompt = f"""
 {self.system_prompt}
 
 사용자가 다음과 같은 러닝 기록을 남겼습니다:
 - 거리: {distance}km
-- 시간: {time_minutes}분
-- 페이스: {pace:.2f}분/km
+- 시간: {duration}
+- 페이스: {pace_per_km}
 
 이 기록을 분석하고 격려의 메시지와 함께 다음 러닝을 위한 조언을 해주세요.
 """
 
         try:
-            # AI 응답 생성 (google-genai 1.56.0 API 사용)
             response = self.client.models.generate_content(
                 model=GEMINI_MODEL_NAME,
                 contents=prompt

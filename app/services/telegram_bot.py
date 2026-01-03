@@ -6,6 +6,7 @@ from telegram.ext import (
     filters,
     ContextTypes
 )
+from datetime import timedelta
 from app.config.settings import get_settings
 from app.services.ai_service import ai_service
 from app.config.database import supabase_client
@@ -68,33 +69,43 @@ class TelegramBot:
 
     async def record_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """러닝 기록 명령어 처리"""
-        try:
-            if len(context.args) != 2:
-                await update.message.reply_text(
-                    "사용법: /record [거리(km)] [시간(분)]\n예시: /record 5 30"
-                )
-                return
+        if len(context.args) != 2:
+            await update.message.reply_text(
+                "사용법: /record [거리(km)] [시간(hh:mm:ss)]\n예시: /record 5.0 00:25:47"
+            )
+            return
 
+        try:
             distance = float(context.args[0])
-            time_minutes = float(context.args[1])
+            duration = self._parse_duration(context.args[1])
+            pace_per_km = duration / distance
 
             # Supabase에 기록 저장
             user = update.effective_user
-            supabase_client.table('running_records').insert({
-                'telegram_id': user.id,
+            supabase_client.table('workouts').insert({
+                'user_id': user.id,
                 'distance_km': distance,
-                'time_minutes': time_minutes,
-                'pace_min_per_km': time_minutes / distance if distance > 0 else 0
+                'duration': str(duration),
+                'pace_per_km': str(pace_per_km)
             }).execute()
 
             # AI 피드백 생성
-            feedback = await ai_service.analyze_running_record(distance, time_minutes)
+            feedback = await ai_service.analyze_running_record(distance, duration, pace_per_km)
             await update.message.reply_text(f"기록이 저장되었습니다!\n\n{feedback}")
 
-        except ValueError:
-            await update.message.reply_text("거리와 시간은 숫자로 입력해주세요.")
+        except ValueError as e:
+            await update.message.reply_text(
+                "입력 형식이 올바르지 않습니다.\n"
+                "거리: 숫자 (예: 5.0)\n"
+                "시간: hh:mm:ss 형식 (예: 00:25:47)"
+            )
         except Exception as e:
             await update.message.reply_text(f"기록 저장 중 오류가 발생했습니다: {str(e)}")
+
+    def _parse_duration(self, time_str: str) -> timedelta:
+        """시간 문자열을 timedelta로 파싱"""
+        hours, minutes, seconds = map(int, time_str.split(":"))
+        return timedelta(hours=hours, minutes=minutes, seconds=seconds)
 
     async def handle_message(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """일반 메시지 처리"""
