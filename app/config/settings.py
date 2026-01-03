@@ -5,7 +5,7 @@ from functools import lru_cache
 class Settings(BaseSettings):
     # Telegram Bot
     telegram_bot_token: str
-    webhook_url: str
+    webhook_url: str = ""
 
     # Google AI Studio
     google_api_key: str
@@ -17,6 +17,7 @@ class Settings(BaseSettings):
     # App
     app_name: str = "Running Bot"
     debug: bool = True
+    environment: str = "dev"  # dev or prod
 
     class Config:
         env_file = ".env"

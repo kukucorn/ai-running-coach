@@ -117,12 +117,33 @@ class TelegramBot:
         await update.message.reply_text(ai_response)
 
     async def run(self):
-        """봇 실행"""
+        """봇 실행 (환경에 따라 webhook 또는 polling 모드)"""
         await self.application.initialize()
         await self.application.start()
 
+        if settings.environment == "prod":
+            # Webhook 설정 (운영 환경)
+            print(f"Setting webhook to: {settings.webhook_url}")
+            await self.application.bot.set_webhook(
+                url=settings.webhook_url,
+                allowed_updates=["message", "callback_query"]
+            )
+            print("Telegram Bot webhook set successfully!")
+        else:
+            # Polling 설정 (개발 환경)
+            print("Starting polling mode...")
+            await self.application.updater.start_polling(allowed_updates=["message", "callback_query"])
+            print("Telegram Bot polling started successfully!")
+
     async def stop(self):
-        """봇 중지"""
+        """봇 중지 (환경에 따라 webhook 또는 polling 정리)"""
+        if settings.environment == "prod":
+            # Webhook 삭제
+            await self.application.bot.delete_webhook()
+        else:
+            # Polling 중지
+            await self.application.updater.stop()
+
         await self.application.stop()
         await self.application.shutdown()
 

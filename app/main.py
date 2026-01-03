@@ -13,20 +13,10 @@ async def lifespan(app: FastAPI):
     print("Starting Telegram Bot...")
     await telegram_bot.run()
 
-    # Webhook 설정
-    print(f"Setting webhook to: {settings.webhook_url}")
-    await telegram_bot.application.bot.set_webhook(
-        url=settings.webhook_url,
-        allowed_updates=["message", "callback_query"]
-    )
-    print("Telegram Bot webhook set successfully!")
-
     yield
 
     # 종료 시
     print("Stopping Telegram Bot...")
-    # Webhook 삭제
-    await telegram_bot.application.bot.delete_webhook()
     await telegram_bot.stop()
     print("Telegram Bot stopped.")
 
