@@ -5,11 +5,6 @@ from app.services.telegram_bot import telegram_bot
 
 settings = get_settings()
 
-# Webhook 설정
-WEBHOOK_HOST = "https://scrawny-rosemary-kukucorn-b44b6d4a.koyeb.app"
-WEBHOOK_PATH = f"/webhook/{settings.telegram_bot_token}"
-WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
-
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -19,9 +14,9 @@ async def lifespan(app: FastAPI):
     await telegram_bot.run()
 
     # Webhook 설정
-    print(f"Setting webhook to: {WEBHOOK_URL}")
+    print(f"Setting webhook to: {settings.webhook_url}")
     await telegram_bot.application.bot.set_webhook(
-        url=WEBHOOK_URL,
+        url=settings.webhook_url,
         allowed_updates=["message", "callback_query"]
     )
     print("Telegram Bot webhook set successfully!")

@@ -5,6 +5,7 @@ from functools import lru_cache
 class Settings(BaseSettings):
     # Telegram Bot
     telegram_bot_token: str
+    webhook_url: str
 
     # Google AI Studio
     google_api_key: str
