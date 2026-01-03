@@ -45,14 +45,15 @@ pip install -r requirements.txt
 ```
 
 3. 환경 변수 설정
-
-`.env.example`을 복사하여 `.env` 파일을 생성하고 필요한 값을 입력합니다:
+   ₩
+   `.env.example`을 복사하여 `.env` 파일을 생성하고 필요한 값을 입력합니다:
 
 ```bash
 cp .env.example .env
 ```
 
 필요한 환경 변수:
+
 - `TELEGRAM_BOT_TOKEN`: [@BotFather](https://t.me/botfather)에서 발급
 - `GOOGLE_API_KEY`: [Google AI Studio](https://aistudio.google.com/)에서 발급
 - `SUPABASE_URL`: Supabase 프로젝트 URL
@@ -61,6 +62,7 @@ cp .env.example .env
 ## Supabase 테이블 스키마
 
 ### users 테이블
+
 ```sql
 CREATE TABLE users (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
@@ -73,6 +75,7 @@ CREATE TABLE users (
 ```
 
 ### running_records 테이블
+
 ```sql
 CREATE TABLE running_records (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
@@ -86,6 +89,7 @@ CREATE TABLE running_records (
 ```
 
 ### conversations 테이블
+
 ```sql
 CREATE TABLE conversations (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
