@@ -61,7 +61,7 @@ class TelegramBot:
 
 /start - 봇 시작
 /help - 도움말 보기
-/record - 러닝 기록하기 (예: /record 5 30 - 5km를 30분)
+/record - 러닝 기록하기 (예: /record 5.0 00:30:21 - 5km를 30분 21초)
 
 일반 메시지를 보내면 AI 코치와 대화할 수 있습니다!
 """
