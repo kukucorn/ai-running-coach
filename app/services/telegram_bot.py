@@ -1,4 +1,4 @@
-from telegram import Update
+from telegram import Update, apihelper
 from telegram.ext import (
     Application,
     CommandHandler,
@@ -13,6 +13,7 @@ from app.config.database import supabase_client
 
 settings = get_settings()
 
+apihelper.SESSION_TIME_TO_LIVE = 60
 
 class TelegramBot:
     def __init__(self):
