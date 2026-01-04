@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request, HTTPException
 from contextlib import asynccontextmanager
+import asyncio
 from app.config.settings import get_settings
 from app.services.telegram_bot import telegram_bot
 
@@ -13,9 +14,20 @@ async def lifespan(app: FastAPI):
     print("Starting Telegram Bot...")
     await telegram_bot.run()
 
+    # 백그라운드에서 webhook 상태 체크 루프 실행
+    webhook_check_task = asyncio.create_task(telegram_bot.check_webhook_loop())
+    print("Webhook check loop started in background.")
+
     yield
 
     # 종료 시
+    print("Stopping webhook check loop...")
+    webhook_check_task.cancel()
+    try:
+        await webhook_check_task
+    except asyncio.CancelledError:
+        print("Webhook check loop cancelled.")
+
     print("Stopping Telegram Bot...")
     await telegram_bot.stop()
     print("Telegram Bot stopped.")

@@ -171,6 +171,37 @@ class TelegramBot:
         update = Update.de_json(update_data, self.application.bot)
         await self.application.process_update(update)
 
+    async def check_webhook_loop(self):
+        """1분마다 웹훅 상태를 점검하고 복구하는 루프"""
+        import asyncio
+
+        # 개발 환경에서는 루프를 실행하지 않음
+        if settings.environment != "prod":
+            print("개발 환경이므로 webhook 체크를 건너뜁니다.")
+            return
+
+        while True:
+            try:
+                # 1. 텔레그램에 현재 웹훅 정보 요청
+                webhook_info = await self.application.bot.get_webhook_info()
+
+                # 2. URL이 비어있거나 다르면 다시 설정
+                if webhook_info.url != settings.webhook_url:
+                    print(f"웹훅이 해제됨을 감지! 재등록 중... (현재: '{webhook_info.url}')")
+                    await self.application.bot.set_webhook(
+                        url=settings.webhook_url,
+                        allowed_updates=["message", "callback_query"]
+                    )
+                    print("웹훅 재등록 완료.")
+                else:
+                    print("웹훅 연결 상태 정상.")
+
+            except Exception as e:
+                print(f"웹훅 점검 중 에러 발생: {e}")
+
+            # 60초 대기
+            await asyncio.sleep(60)
+
 
 # 봇 인스턴스
 telegram_bot = TelegramBot()
