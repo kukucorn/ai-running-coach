@@ -16,8 +16,14 @@ from app.config.database import supabase_client
 settings = get_settings()
 
 class TelegramBot:
-    def __init__(self): 
-        request = HTTPXRequest(connection_pool_size=8, read_timeout=10, write_timeout=10, connect_timeout=10)
+    def __init__(self):
+        request = HTTPXRequest(
+            connection_pool_size=8,
+            read_timeout=10,
+            write_timeout=10,
+            connect_timeout=10,
+            pool_timeout=30.0  # 연결 풀에서 연결을 기다리는 최대 시간(초)
+        )
         self.application = Application.builder().token(settings.telegram_bot_token).request(request).build()
         self._setup_handlers()
 
