@@ -10,6 +10,12 @@ FastAPI 백엔드와 텔레그램 봇을 활용한 러닝 코치 애플리케이
 - **Database**: Supabase
 - **Language**: Python 3.10+
 
+## 사용 중인 플랫폼
+
+- **[Koyeb](https://app.koyeb.com/)**: Python 서버 호스팅
+- **[UptimeRobot](https://dashboard.uptimerobot.com/)**: 서버 상태 모니터링 및 유휴 방지
+- **[Supabase](https://supabase.com/dashboard)**: 데이터베이스 관리
+
 ## 프로젝트 구조
 
 ```
@@ -43,21 +49,6 @@ source venv/bin/activate  # Windows: venv\Scripts\activate
 ```bash
 pip install -r requirements.txt
 ```
-
-3. 환경 변수 설정
-   ₩
-   `.env.example`을 복사하여 `.env` 파일을 생성하고 필요한 값을 입력합니다:
-
-```bash
-cp .env.example .env
-```
-
-필요한 환경 변수:
-
-- `TELEGRAM_BOT_TOKEN`: [@BotFather](https://t.me/botfather)에서 발급
-- `GOOGLE_API_KEY`: [Google AI Studio](https://aistudio.google.com/)에서 발급
-- `SUPABASE_URL`: Supabase 프로젝트 URL
-- `SUPABASE_KEY`: Supabase anon public key
 
 ## Supabase 테이블 스키마
 
