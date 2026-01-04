@@ -8,7 +8,8 @@ class Settings(BaseSettings):
     webhook_url: str = ""
 
     # Google AI Studio
-    google_api_key: str
+    gemini_api_key: str
+    gemini_model_name: str
 
     # Supabase
     supabase_url: str

@@ -5,16 +5,13 @@ from datetime import timedelta
 
 settings = get_settings()
 
-GEMINI_MODEL_NAME = 'gemini-2.5-flash-lite'
-
-# Google AI Studio 설정 - 환경 변수로 API 키 설정
-os.environ['GEMINI_API_KEY'] = settings.google_api_key
-
+GEMINI_API_KEY = settings.gemini_api_key
+GEMINI_MODEL_NAME = settings.gemini_model_name
 
 class AIService:
     def __init__(self):
         # Google Genai Client 초기화
-        self.client = genai.Client()
+        self.client = genai.Client(api_key=GEMINI_API_KEY)
 
         # 러닝 코칭 봇을 위한 시스템 프롬프트
         self.system_prompt = """
