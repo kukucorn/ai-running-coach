@@ -6,6 +6,8 @@ from telegram.ext import (
     filters,
     ContextTypes
 )
+from telegram.request import HTTPXRequest
+
 from datetime import timedelta
 from app.config.settings import get_settings
 from app.services.ai_service import ai_service
@@ -13,11 +15,10 @@ from app.config.database import supabase_client
 
 settings = get_settings()
 
-apihelper.SESSION_TIME_TO_LIVE = 60
-
 class TelegramBot:
-    def __init__(self):
-        self.application = Application.builder().token(settings.telegram_bot_token).build()
+    def __init__(self): 
+        request = HTTPXRequest(connection_pool_size=8, read_timeout=10, write_timeout=10, connect_timeout=10)
+        self.application = Application.builder().token(settings.telegram_bot_token).request(request).build()
         self._setup_handlers()
 
     def _setup_handlers(self):
