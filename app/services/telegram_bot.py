@@ -78,7 +78,7 @@ class TelegramBot:
         try:
             distance = float(context.args[0])
             duration = self._parse_duration(context.args[1])
-            pace_per_km = duration / distance
+            pace_per_km = timedelta(seconds=int((duration / distance).total_seconds()))
 
             # Supabase에 기록 저장
             user = update.effective_user
